@@ -16,15 +16,22 @@
     "prepublishOnly": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config jestconfig.json"
   },
   "keywords": [],
   "author": "Frank Matranga <matraf@rpi.edu>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^26.0.3",
+    "@types/jsdom": "^16.2.3",
+    "jest": "^26.1.0",
     "prettier": "^2.0.5",
+    "ts-jest": "^26.1.1",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "jsdom": "^16.2.2"
   }
 }
