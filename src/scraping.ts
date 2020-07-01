@@ -1,31 +1,10 @@
 import { JSDOM } from "jsdom";
+import { determineTimes } from "./utils";
+import { Period, Section, Course } from "./interfaces";
 
 const SCHEDULE_ROOT_URL = `https://sis.rpi.edu/reg/zs`;
 
-export interface Course {
-  termCode: string;
-  title: string;
-  subjectPrefix: string;
-  subjectCode: string;
-  sections?: Section[];
-}
-
-export interface Section {
-  crn: string;
-  section: string;
-  periods?: Period[];
-}
-
-export interface Period {
-  type: string;
-  startTime: string;
-  endTime: string;
-  days: number[];
-  startDate: string;
-  endDate: string;
-  location: string;
-  instructors: string[];
-}
+const dayMap: { [key: string]: number } = { M: 1, T: 2, W: 3, R: 4, F: 5 };
 
 /**
  * Request schedule page for a specific term and get JSDOM document.
@@ -38,4 +17,72 @@ export async function getScheduleDocumentForTerm(termCode: string) {
   const dom = await JSDOM.fromURL(SCHEDULE_ROOT_URL + termCode + ".htm");
 
   return dom.window.document;
+}
+
+/**
+ * Given a term code and JSDOM document, parses the period rows to get every course period.
+ *
+ * @param {Document} document JSDOM document of Registrar page
+ * @param {string} termCode Registrar term code
+ * @returns {Period[]} All period objects
+ */
+export function getPeriods(document: Document, termCode: string) {
+  /** Every table row in a schedule document that *most likely* represents a course period but may be invalid. */
+  const rows = document.querySelectorAll(
+    "div > div > center table > tbody > tr"
+  );
+
+  /** All valid periods found in the document. */
+  const periods: Period[] = [];
+  let lastCRN: string;
+  let lastCourseSubjectCode: string;
+  let lastCourseNumber: string;
+  let lastCourseTitle: string;
+  rows.forEach((row) => {
+    const rowTds: string[] = [];
+    const tdElements = row.querySelectorAll("td");
+    tdElements.forEach((td) => {
+      if (td.textContent) rowTds.push(td.textContent.trim());
+    });
+
+    if (rowTds.length === 0 || !rowTds[5]) return;
+
+    let [crn, summary] = rowTds[0].split(" ");
+    let courseTitle, courseSubjectCode, courseNumber, sectionId;
+    if (!crn || !summary) {
+      // Change of section
+      crn = lastCRN;
+      courseSubjectCode = lastCourseSubjectCode;
+      courseNumber = lastCourseNumber;
+      courseTitle = lastCourseTitle;
+    } else {
+      [courseSubjectCode, courseNumber, sectionId] = summary.split("-");
+      courseTitle = rowTds[1];
+    }
+
+    periods.push({
+      termCode,
+      crn,
+      courseTitle,
+      courseSubjectCode,
+      courseNumber,
+      sectionId,
+      type: rowTds[2],
+      credits: rowTds[3],
+      days: rowTds[5]
+        .replace(/ /g, "")
+        .split("")
+        .map((letter) => dayMap[letter]),
+      instructors: rowTds[8].split("/"),
+      location: rowTds[9],
+      ...determineTimes(rowTds[6], rowTds[7]),
+    });
+
+    lastCRN = crn;
+    lastCourseSubjectCode = courseSubjectCode;
+    lastCourseNumber = courseNumber;
+    lastCourseTitle = courseTitle;
+  });
+
+  return periods;
 }
