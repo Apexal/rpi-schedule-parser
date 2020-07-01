@@ -16,11 +16,16 @@ export function determineTimes(startTime: string, endTime: string): Times {
   let [startHours, startMinutes] = startTime
     .split(":")
     .map((piece) => parseInt(piece));
+
+  if (!startMinutes) startMinutes = 0;
+
   let [endHours, endMinutes] = endTime
     .replace("AM", "")
     .replace("PM", "")
     .split(":")
     .map((piece) => parseInt(piece));
+
+  if (!endMinutes) endMinutes = 0;
 
   // Determine meridiem
   if (endTime.includes("PM")) {
