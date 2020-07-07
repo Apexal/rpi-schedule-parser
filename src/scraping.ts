@@ -48,7 +48,7 @@ export function getPeriods(document: Document, termCode: string) {
     if (rowTds.length === 0 || !rowTds[5]) return;
 
     let [crn, summary] = rowTds[0].split(" ");
-    let courseTitle, courseSubjectPrefix, courseSubjectCode, section;
+    let courseTitle, courseSubjectPrefix, courseSubjectCode, sectionId;
     if (!crn || !summary) {
       // Change of section
       crn = lastCRN;
@@ -56,7 +56,7 @@ export function getPeriods(document: Document, termCode: string) {
       courseSubjectCode = lastCourseSubjectCode;
       courseTitle = lastCourseTitle;
     } else {
-      [courseSubjectPrefix, courseSubjectCode, section] = summary.split("-");
+      [courseSubjectPrefix, courseSubjectCode, sectionId] = summary.split("-");
       courseTitle = rowTds[1];
     }
 
@@ -66,7 +66,7 @@ export function getPeriods(document: Document, termCode: string) {
       courseTitle,
       courseSubjectPrefix,
       courseSubjectCode,
-      section,
+      sectionId,
       type: rowTds[2],
       credits: rowTds[3],
       days: rowTds[5]

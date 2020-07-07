@@ -11,13 +11,12 @@ test("gets periods for term properly", async () => {
   );
   const periods = getPeriods(scheduleDOM.window.document, termCode);
 
-  console.log(periods[0]);
   const expectedFirstPeriod: Period = {
     termCode: "202009",
     crn: "25790",
     courseTitle: "EFF COMM FOR CLASS PEDAGOGY",
-    courseSubjectCode: "ADMN",
-    courseNumber: "1010",
+    courseSubjectPrefix: "ADMN",
+    courseSubjectCode: "1010",
     sectionId: "01",
     type: "LEC",
     credits: "0",
