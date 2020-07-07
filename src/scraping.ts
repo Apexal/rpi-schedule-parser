@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 import { determineTimes } from "./utils";
-import { Period, Section, Course } from "./interfaces";
+import { Period, PeriodType } from "./interfaces";
 
 const SCHEDULE_ROOT_URL = `https://sis.rpi.edu/reg/zs`;
 
@@ -35,28 +35,28 @@ export function getPeriods(document: Document, termCode: string) {
   /** All valid periods found in the document. */
   const periods: Period[] = [];
   let lastCRN: string;
+  let lastCourseSubjectPrefix: string;
   let lastCourseSubjectCode: string;
-  let lastCourseNumber: string;
   let lastCourseTitle: string;
   rows.forEach((row) => {
-    const rowTds: string[] = [];
+    const rowTds: PeriodType[] = [];
     const tdElements = row.querySelectorAll("td");
     tdElements.forEach((td) => {
-      if (td.textContent) rowTds.push(td.textContent.trim());
+      if (td.textContent) rowTds.push(td.textContent.trim() as PeriodType);
     });
 
     if (rowTds.length === 0 || !rowTds[5]) return;
 
     let [crn, summary] = rowTds[0].split(" ");
-    let courseTitle, courseSubjectCode, courseNumber, sectionId;
+    let courseTitle, courseSubjectPrefix, courseSubjectCode, section;
     if (!crn || !summary) {
       // Change of section
       crn = lastCRN;
+      courseSubjectPrefix = lastCourseSubjectPrefix;
       courseSubjectCode = lastCourseSubjectCode;
-      courseNumber = lastCourseNumber;
       courseTitle = lastCourseTitle;
     } else {
-      [courseSubjectCode, courseNumber, sectionId] = summary.split("-");
+      [courseSubjectPrefix, courseSubjectCode, section] = summary.split("-");
       courseTitle = rowTds[1];
     }
 
@@ -64,9 +64,9 @@ export function getPeriods(document: Document, termCode: string) {
       termCode,
       crn,
       courseTitle,
+      courseSubjectPrefix,
       courseSubjectCode,
-      courseNumber,
-      sectionId,
+      section,
       type: rowTds[2],
       credits: rowTds[3],
       days: rowTds[5]
@@ -79,8 +79,8 @@ export function getPeriods(document: Document, termCode: string) {
     });
 
     lastCRN = crn;
+    lastCourseSubjectPrefix = courseSubjectPrefix;
     lastCourseSubjectCode = courseSubjectCode;
-    lastCourseNumber = courseNumber;
     lastCourseTitle = courseTitle;
   });
 

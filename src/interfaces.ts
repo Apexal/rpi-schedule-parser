@@ -1,3 +1,5 @@
+export type PeriodType = "LEC" | "STU" | "TES" | "SEM" | "LAB" | "REC";
+
 /** Represents a single course **for a specific term**. */
 export interface Course {
   /** The unique identifier for a term made from combining start year with start month, e.g. `"202001"`. */
@@ -9,7 +11,7 @@ export interface Course {
   /** The number of the course, e.g. `"1010"` from `"BIOL 1010"`. */
   subjectCode: string;
   /** The different sections for this course. */
-  sections?: Section[];
+  sections: Section[];
   [key: string]: any;
 }
 
@@ -17,17 +19,17 @@ export interface Course {
 export interface Section {
   /** Unique identifier for this course section in a certain term. May repeat over different terms. */
   crn: string;
-  /** Section code for this section, e.g. `"01"` or `"07"` */
-  section: string;
+  /** Id for this section, e.g. `"01"` or `"07"` */
+  id: string;
   /** The periods associated with this section. */
-  periods?: Period[];
+  periods: Period[];
   [key: string]: any;
 }
 
 /** Represents a single weekly period associated with a section of a course. Might meet multiple days of the week. */
 export interface Period {
   /** The type of period, e.g. lecture, test block, recitation, etc. */
-  type: "LEC" | "STU" | "TES" | "SEM" | "LAB" | "REC";
+  type: PeriodType;
   /** Starting time of period in HH:mm (0-padded, 24-hour format). */
   startTime: string;
   /** Ending time of period in HH:mm (0-padded, 24-hour format) in EST. */
