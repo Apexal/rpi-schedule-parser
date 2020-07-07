@@ -47,8 +47,14 @@ export function getPeriods(document: Document, termCode: string) {
 
     if (rowTds.length === 0 || !rowTds[5]) return;
 
-    let [crn, summary] = rowTds[0].split(" ");
-    let courseTitle, courseSubjectPrefix, courseSubjectCode, sectionId;
+    const splitPieces = rowTds[0].split(" ");
+    let crn = splitPieces[0];
+    const summary = splitPieces[1];
+
+    let courseTitle;
+    let courseSubjectPrefix;
+    let courseSubjectCode;
+    let sectionId;
     if (!crn || !summary) {
       // Change of section
       crn = lastCRN;

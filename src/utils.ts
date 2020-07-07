@@ -17,7 +17,7 @@ type Times = {
 export function determineTimes(startTime: string, endTime: string): Times {
   let [startHours, startMinutes] = startTime
     .split(":")
-    .map((piece) => parseInt(piece));
+    .map((piece) => parseInt(piece, 10));
 
   if (!startMinutes) startMinutes = 0;
 
@@ -25,7 +25,7 @@ export function determineTimes(startTime: string, endTime: string): Times {
     .replace("AM", "")
     .replace("PM", "")
     .split(":")
-    .map((piece) => parseInt(piece));
+    .map((piece) => parseInt(piece, 10));
 
   if (!endMinutes) endMinutes = 0;
 
