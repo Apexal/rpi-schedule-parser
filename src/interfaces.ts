@@ -36,6 +36,8 @@ export interface Period {
   endTime: string
   /** Days that this period takes place each week (0 is Sunday) in EST. */
   days: number[]
+  /** How this section will be taught */
+  instructionMethod?: string
   /** Date the period starts occurring in YYYY-MM-DD format in EST. */
   startDate?: string
   /** Date the period stops occurring in YYYY-MM-DD format in EST */
@@ -44,5 +46,7 @@ export interface Period {
   location: string
   /** The instructors associated with this period. Just last names. */
   instructors: string[]
+  /** A direct link to the RPI Bookstore listings for this section */
+  textbooksLink?: string
   [key: string]: any
 }

@@ -18,13 +18,16 @@ test('gets periods for term properly', async () => {
     courseSubjectPrefix: 'ADMN',
     courseSubjectCode: '1010',
     sectionId: '01',
+    instructionMethod: 'Online Course',
     type: 'LEC',
     credits: '0',
     days: [1, 4],
     instructors: ['Staff'],
-    location: '0',
-    startTime: '14:00',
-    endTime: '15:50',
+    location: 'ONLINE',
+    startTime: '14:30',
+    endTime: '16:20',
+    // textbooksLink:
+    // 'https://www.bkstr.com/webapp/wcs/stores/servlet/booklookServlet?bookstore_id-1=1461&term_id-1=202009&crn-1=25790',
   }
 
   expect(periods[0]).toEqual(expectedFirstPeriod)

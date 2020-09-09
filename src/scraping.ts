@@ -76,14 +76,16 @@ export function getPeriods(document: Document, termCode: string): Period[] {
       courseSubjectCode,
       sectionId,
       type: rowTds[2],
-      credits: rowTds[3],
-      days: rowTds[5]
+      instructionMethod: rowTds[3],
+      credits: rowTds[4],
+      days: rowTds[6]
         .replace(/ /g, '')
         .split('')
         .map((letter) => dayMap[letter]),
-      instructors: rowTds[8].split('/'),
-      location: rowTds[9],
-      ...determineTimes(rowTds[6], rowTds[7]),
+      instructors: rowTds[9].split('/'),
+      location: rowTds[10],
+      // textbooksLink: rowTds
+      ...determineTimes(rowTds[7], rowTds[8]),
     })
 
     lastCRN = crn
