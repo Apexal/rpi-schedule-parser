@@ -17,6 +17,13 @@ test('determineTimes properly parses REALLY inconsistent strings', () => {
   })
 })
 
+test('determineTimes properly parses TBA', () => {
+  expect(determineTimes('** TBA **', '')).toEqual({
+    startTime: null,
+    endTime: null,
+  })
+})
+
 test('properly compiles courses from periods', async () => {
   const termCode = '202009'
 

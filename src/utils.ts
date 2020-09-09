@@ -2,22 +2,30 @@ import { Period, Course, Section } from './interfaces'
 
 type Times = {
   /** 24-hour, 0-padded time, e.g. "08:00" or "14:20" */
-  startTime: string
+  startTime: string | null
   /** 24-hour, 0-padded time, e.g. "08:00" or "14:20" */
-  endTime: string
+  endTime: string | null
 }
 
 /**
- * Given two inconsistent time strings, convert them to 24-hour time in format `HH:mm`
+ * Given two inconsistent time strings, convert them to 24-hour time in format `HH:mm`.
+ * If the time is invalid, like '** TBA **' it will set start and end to null.
  *
  * @param {string} startTime String like '10:00' or '3:50PM'
  * @param {string} endTime String like '10:00' or '3:50PM'
- * @returns {object} Object with `startTime` and `endTime` in `HH:mm` format
+ * @returns {object} Object with `startTime` and `endTime` in `HH:mm` format or nulled
  */
 export function determineTimes(startTime: string, endTime: string): Times {
   let [startHours, startMinutes] = startTime
     .split(':')
     .map((piece) => parseInt(piece, 10))
+
+  if (isNaN(startHours)) {
+    return {
+      startTime: null,
+      endTime: null,
+    }
+  }
 
   if (!startMinutes) startMinutes = 0
 

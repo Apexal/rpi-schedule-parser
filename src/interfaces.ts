@@ -31,19 +31,19 @@ export interface Period {
   /** The type of period, e.g. lecture, test block, recitation, etc. */
   type: PeriodType
   /** Starting time of period in HH:mm (0-padded, 24-hour format). */
-  startTime: string
+  startTime: string | null
   /** Ending time of period in HH:mm (0-padded, 24-hour format) in EST. */
-  endTime: string
+  endTime: string | null
   /** Days that this period takes place each week (0 is Sunday) in EST. */
   days: number[]
   /** How this section will be taught */
   instructionMethod?: string
-  /** Date the period starts occurring in YYYY-MM-DD format in EST. */
+  /** Date the period starts occurring in YYYY-MM-DD format in EST. Or NULL if TBA. */
   startDate?: string
-  /** Date the period stops occurring in YYYY-MM-DD format in EST */
+  /** Date the period stops occurring in YYYY-MM-DD format in EST. Or NULL if TBA. */
   endDate?: string
-  /** Where this period takes place in BUILDING ROOM# format, e.g. `"DARRIN 308"`. */
-  location: string
+  /** Where this period takes place in BUILDING ROOM# format, e.g. `"DARRIN 308"`. Null if TBA. */
+  location: string | null
   /** The instructors associated with this period. Just last names. */
   instructors: string[]
   /** A direct link to the RPI Bookstore listings for this section */

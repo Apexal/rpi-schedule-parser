@@ -83,7 +83,7 @@ export function getPeriods(document: Document, termCode: string): Period[] {
         .split('')
         .map((letter) => dayMap[letter]),
       instructors: rowTds[9].split('/'),
-      location: rowTds[10],
+      location: rowTds[10].includes('TBA') ? null : rowTds[10],
       // textbooksLink: rowTds
       ...determineTimes(rowTds[7], rowTds[8]),
     })
