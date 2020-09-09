@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { JSDOM } from 'jsdom'
+import { getCoursesForTerm } from '../src'
 import { getPeriods } from '../src/scraping'
 import { Period } from '../src/interfaces'
 
@@ -31,4 +32,13 @@ test('gets periods for term properly', async () => {
   }
 
   expect(periods[0]).toEqual(expectedFirstPeriod)
+  expect(periods.length).toBe(2721)
+})
+
+test('gets courses for term properly', async () => {
+  const termCode = '202009'
+
+  const courses = await getCoursesForTerm(termCode)
+
+  expect(courses.length).toBe(884)
 })

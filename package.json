@@ -1,6 +1,6 @@
 {
   "name": "rpi-schedule-parser",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "A simple parser that can convert CRNs into objects detailing the courses and periods.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

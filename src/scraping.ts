@@ -41,13 +41,14 @@ export function getPeriods(document: Document, termCode: string): Period[] {
   let lastCourseSubjectCode: string
   let lastCourseTitle: string
   rows.forEach((row) => {
-    const rowTds: PeriodType[] = []
+    const rowTds: string[] = []
     const tdElements = row.querySelectorAll('td')
     tdElements.forEach((td) => {
-      if (td.textContent) rowTds.push(td.textContent.trim() as PeriodType)
+      if (td.textContent) rowTds.push(td.textContent.trim())
     })
 
-    if (rowTds.length === 0 || !rowTds[5]) return
+    // Skip empty rows
+    if (rowTds.length === 0 || rowTds[1] === 'NOTE:') return
 
     const splitPieces = rowTds[0].split(' ')
     let crn = splitPieces[0]
@@ -75,13 +76,15 @@ export function getPeriods(document: Document, termCode: string): Period[] {
       courseSubjectPrefix,
       courseSubjectCode,
       sectionId,
-      type: rowTds[2],
+      type: rowTds[2] as PeriodType,
       instructionMethod: rowTds[3],
       credits: rowTds[4],
       days: rowTds[6]
-        .replace(/ /g, '')
-        .split('')
-        .map((letter) => dayMap[letter]),
+        ? rowTds[6]
+            .replace(/ /g, '')
+            .split('')
+            .map((letter) => dayMap[letter])
+        : [],
       instructors: rowTds[9].split('/'),
       location: rowTds[10].includes('TBA') ? null : rowTds[10],
       // textbooksLink: rowTds
