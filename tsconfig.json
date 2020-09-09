@@ -10,6 +10,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "sourceRoot": "src",
+    "removeComments": false,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"

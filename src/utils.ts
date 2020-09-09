@@ -1,11 +1,11 @@
-import { Period, Course, Section } from "./interfaces";
+import { Period, Course, Section } from './interfaces'
 
 type Times = {
   /** 24-hour, 0-padded time, e.g. "08:00" or "14:20" */
-  startTime: string;
+  startTime: string
   /** 24-hour, 0-padded time, e.g. "08:00" or "14:20" */
-  endTime: string;
-};
+  endTime: string
+}
 
 /**
  * Given two inconsistent time strings, convert them to 24-hour time in format `HH:mm`
@@ -16,52 +16,52 @@ type Times = {
  */
 export function determineTimes(startTime: string, endTime: string): Times {
   let [startHours, startMinutes] = startTime
-    .split(":")
-    .map((piece) => parseInt(piece, 10));
+    .split(':')
+    .map((piece) => parseInt(piece, 10))
 
-  if (!startMinutes) startMinutes = 0;
+  if (!startMinutes) startMinutes = 0
 
   let [endHours, endMinutes] = endTime
-    .replace("AM", "")
-    .replace("PM", "")
-    .split(":")
-    .map((piece) => parseInt(piece, 10));
+    .replace('AM', '')
+    .replace('PM', '')
+    .split(':')
+    .map((piece) => parseInt(piece, 10))
 
-  if (!endMinutes) endMinutes = 0;
+  if (!endMinutes) endMinutes = 0
 
   // Determine meridiem
-  if (endTime.includes("PM")) {
+  if (endTime.includes('PM')) {
     if (endHours < 12) {
-      endHours += 12;
+      endHours += 12
     }
     if (startHours + 12 <= endHours) {
-      startHours += 12;
+      startHours += 12
     }
   }
 
-  const finalStartTime = `${String(startHours).padStart(2, "0")}:${String(
-    startMinutes
-  ).padStart(2, "0")}`;
+  const finalStartTime = `${String(startHours).padStart(2, '0')}:${String(
+    startMinutes,
+  ).padStart(2, '0')}`
 
-  const finalEndTime = `${String(endHours).padStart(2, "0")}:${String(
-    endMinutes
-  ).padStart(2, "0")}`;
+  const finalEndTime = `${String(endHours).padStart(2, '0')}:${String(
+    endMinutes,
+  ).padStart(2, '0')}`
 
   return {
     startTime: finalStartTime,
     endTime: finalEndTime,
-  };
+  }
 }
 
 /** Generate a unique ID for a period's associated course. */
 function periodCourseId(period: Period) {
-  return period.courseSubjectPrefix + period.courseSubjectCode;
+  return period.courseSubjectPrefix + period.courseSubjectCode
 }
 
 function findOrCourseFromPeriod(
   courses: { [key: string]: Course },
   period: Period,
-  termCode: string
+  termCode: string,
 ): Course {
   if (!courses[periodCourseId(period)]) {
     courses[periodCourseId(period)] = {
@@ -70,44 +70,44 @@ function findOrCourseFromPeriod(
       subjectPrefix: period.courseSubjectPrefix,
       subjectCode: period.courseSubjectCode,
       sections: [] as Section[],
-    };
+    }
   }
 
-  return courses[periodCourseId(period)];
+  return courses[periodCourseId(period)]
 }
 
 function findOrCreateSectionFromPeriod(course: Course, period: Period) {
   let existingSection = course.sections.find(
-    (section) => section.id === period.section
-  );
+    (section) => section.id === period.section,
+  )
 
   if (!existingSection) {
     existingSection = {
       crn: period.crn,
       id: period.sectionId,
       periods: [],
-    };
-    course.sections.push(existingSection);
+    }
+    course.sections.push(existingSection)
   }
 
-  return existingSection;
+  return existingSection
 }
 
-export function compileCourses(periods: Period[], termCode: string) {
+export function compileCourses(periods: Period[], termCode: string): Course[] {
   // Allows quick lookup of courses
   const courses: {
-    [key: string]: Course;
-  } = {};
+    [key: string]: Course
+  } = {}
 
   // Damn this is good code
   for (const period of periods) {
-    const course = findOrCourseFromPeriod(courses, period, termCode);
-    const section = findOrCreateSectionFromPeriod(course, period);
+    const course = findOrCourseFromPeriod(courses, period, termCode)
+    const section = findOrCreateSectionFromPeriod(course, period)
 
     // Add this period to the course's section list
-    section.periods.push(period);
+    section.periods.push(period)
   }
 
   // Return array of all courses instead of internal object representation since it makes more sense
-  return Object.values(courses);
+  return Object.values(courses)
 }
