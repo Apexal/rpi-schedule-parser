@@ -12,16 +12,24 @@ $ npm install rpi-schedule-parser
 
 ### [Course, Section, and Period Interfaces](src/interfaces.ts)
 
-
 ```js
+/**
+ * Get all separate periods for a specific school term.
+ *
+ * @param termCode The code for the term, e.g. `"202001"`
+ * @returns Promise containing parsed periods
+ */
 getPeriodsForTerm(termCode: string): Promise<Period[]>
-```
-Fetches the periods for a semester.
 
-```js
+
+/**
+ * Get all courses, their sections, and their sections' periods for a specific school term.
+ *
+ * @param termCode The code for the term, e.g. `"202001"`
+ * @returns Promise containing parsed courses with section and periods
+ */
 getCoursesForTerm(termCode: string): Promise<Course[]>
 ```
-Fetches the periods for a semester and aggregates them into courses.
 
 ---
 
